@@ -99,7 +99,7 @@ export const deleteTask = async (req, res) => {
 
         // Check if user has admin role for project
         const project = await prisma.project.findUnique({
-            where: {id: task.projectId},
+            where: {id: tasks[0].projectId},
             include: {members: {include: {user: true}}}
         })
 
@@ -109,12 +109,11 @@ export const deleteTask = async (req, res) => {
             return res.status(403).json({ message: "You don't have admin privileges for this project" });
         }
 
-        const updatedTask = await prisma.task.update({
-            where: {id: req.params.id},
-            data: req.body
+        await prisma.task.deleteMany({
+            where: {id: {in: tasksIds}}
         })
 
-        res.json({ task: updatedTask, message: "Task updated successfully" })
+        res.json({ message: "Task deleted successfully" })
 
     } catch (error) {
         console.log(error);
