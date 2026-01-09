@@ -125,7 +125,7 @@ const syncWorkspaceMemberCreation = inngest.createFunction(
             data: {
                 userId: data.user_id,
                 workspaceId: data.organization_id,
-                role: String(data.role_name).toUpperCase(),
+                role: data.role_name === "org:admin" ? "ADMIN" : "MEMBER",
             }
         })
     }

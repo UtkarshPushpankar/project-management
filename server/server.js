@@ -14,7 +14,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors())
-app.use(clerkMiddleware())
+app.use(clerkMiddleware({ clockSkewInMs: 60000 })) // Allow 60 seconds of clock skew
 
 app.get('/', (req, res) => res.send('Server is live!'));
 
