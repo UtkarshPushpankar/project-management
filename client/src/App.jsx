@@ -6,12 +6,21 @@ import Projects from "./pages/Projects";
 import Team from "./pages/Team";
 import ProjectDetails from "./pages/ProjectDetails";
 import TaskDetails from "./pages/TaskDetails";
+import LandingPage from "./pages/LandingPage";
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
 
 const App = () => {
     return (
         <>
             <Toaster />
             <Routes>
+                {/* Public routes */}
+                <Route path="/landing" element={<LandingPage />} />
+                <Route path="/sign-in" element={<SignInPage />} />
+                <Route path="/sign-up" element={<SignUpPage />} />
+
+                {/* Protected routes */}
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Dashboard />} />
                     <Route path="team" element={<Team />} />
@@ -25,3 +34,4 @@ const App = () => {
 };
 
 export default App;
+
