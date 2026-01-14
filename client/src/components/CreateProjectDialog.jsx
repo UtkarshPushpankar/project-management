@@ -8,7 +8,7 @@ import { addProject } from "../features/workspaceSlice";
 
 const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
-    const {getToken} = useAuth();
+    const { getToken } = useAuth();
     const dispatch = useDispatch();
 
     const { currentWorkspace } = useSelector((state) => state.workspace);
@@ -30,12 +30,12 @@ const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if(!formData.team_lead){
+            if (!formData.team_lead) {
                 return toast.error("Please select a team lead");
             }
             setIsSubmitting(true)
 
-            const {data} = await api.post("/api/projects", {workspaceId: currentWorkspace.id, ...formData}, {headers: {Authorization: `Bearer ${await getToken()}`}})
+            const { data } = await api.post("/api/projects", { workspaceId: currentWorkspace.id, ...formData }, { headers: { Authorization: `Bearer ${await getToken()}` } })
 
             dispatch(addProject(data.project))
             setIsDialogOpen(false)
@@ -43,7 +43,7 @@ const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
         } catch (error) {
             toast.error(error?.response?.data?.message || error.message)
         }
-        finally{
+        finally {
             setIsSubmitting(false)
         }
     };
@@ -55,16 +55,16 @@ const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
     if (!isDialogOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/20 dark:bg-black/60 backdrop-blur flex items-center justify-center text-left z-50">
-            <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 w-full max-w-lg text-zinc-900 dark:text-zinc-200 relative">
-                <button className="absolute top-3 right-3 text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200" onClick={() => setIsDialogOpen(false)} >
+        <div className="fixed inset-0 bg-black/30 dark:bg-black/70 backdrop-blur-sm flex items-center justify-center text-left z-50">
+            <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 w-full max-w-lg text-zinc-900 dark:text-zinc-200 relative shadow-2xl shadow-purple-500/10 dark:shadow-cyan-500/10">
+                <button className="absolute top-4 right-4 p-1.5 rounded-lg text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all" onClick={() => setIsDialogOpen(false)} >
                     <XIcon className="size-5" />
                 </button>
 
-                <h2 className="text-xl font-medium mb-1">Create New Project</h2>
+                <h2 className="text-xl font-bold mb-1 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">Create New Project</h2>
                 {currentWorkspace && (
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-                        In workspace: <span className="text-blue-600 dark:text-blue-400">{currentWorkspace.name}</span>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-5">
+                        In workspace: <span className="text-purple-600 dark:text-cyan-400 font-medium">{currentWorkspace.name}</span>
                     </p>
                 )}
 
@@ -72,13 +72,13 @@ const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                     {/* Project Name */}
                     <div>
                         <label className="block text-sm mb-1">Project Name</label>
-                        <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Enter project name" className="w-full px-3 py-2 rounded dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 mt-1 text-zinc-900 dark:text-zinc-200 text-sm" required />
+                        <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Enter project name" className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 mt-1 text-zinc-900 dark:text-zinc-200 text-sm focus:outline-none focus:border-purple-400 dark:focus:border-cyan-500 focus:ring-2 focus:ring-purple-100 dark:focus:ring-cyan-500/20 transition-all" required />
                     </div>
 
                     {/* Description */}
                     <div>
                         <label className="block text-sm mb-1">Description</label>
-                        <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Describe your project" className="w-full px-3 py-2 rounded dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 mt-1 text-zinc-900 dark:text-zinc-200 text-sm h-20" />
+                        <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Describe your project" className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 mt-1 text-zinc-900 dark:text-zinc-200 text-sm h-20 focus:outline-none focus:border-purple-400 dark:focus:border-cyan-500 focus:ring-2 focus:ring-purple-100 dark:focus:ring-cyan-500/20 transition-all resize-none" />
                     </div>
 
                     {/* Status & Priority */}
@@ -164,11 +164,11 @@ const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                     </div>
 
                     {/* Footer */}
-                    <div className="flex justify-end gap-3 pt-2 text-sm">
-                        <button type="button" onClick={() => setIsDialogOpen(false)} className="px-4 py-2 rounded border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-800" >
+                    <div className="flex justify-end gap-3 pt-3 text-sm">
+                        <button type="button" onClick={() => setIsDialogOpen(false)} className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all" >
                             Cancel
                         </button>
-                        <button disabled={isSubmitting || !currentWorkspace} className="px-4 py-2 rounded bg-gradient-to-br from-blue-500 to-blue-600 text-white dark:text-zinc-200" >
+                        <button disabled={isSubmitting || !currentWorkspace} className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-medium hover:from-purple-500 hover:to-cyan-500 hover:shadow-lg hover:shadow-purple-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed" >
                             {isSubmitting ? "Creating..." : "Create Project"}
                         </button>
                     </div>

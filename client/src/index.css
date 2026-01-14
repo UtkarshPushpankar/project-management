@@ -69,27 +69,36 @@
 
 /* Custom Animations for Landing Page */
 @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-20px);
     }
 }
 
 @keyframes float-delayed {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-15px);
     }
 }
 
 @keyframes pulse-slow {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0.3;
     }
+
     50% {
         opacity: 0.6;
     }
@@ -99,9 +108,11 @@
     0% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
+
     100% {
         background-position: 0% 50%;
     }
@@ -111,6 +122,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -140,16 +152,110 @@
 
 /* Grid pattern for backgrounds */
 .bg-grid-pattern {
-    background-image: 
-        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-image:
+        linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px);
     background-size: 50px 50px;
 }
 
 /* Light mode grid pattern */
 .light .bg-grid-pattern,
 :not(.dark) .bg-grid-pattern {
-    background-image: 
-        linear-gradient(rgba(0,0,0,.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,.03) 1px, transparent 1px);
+    background-image:
+        linear-gradient(rgba(0, 0, 0, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, .03) 1px, transparent 1px);
+}
+
+/* Premium Card Styles */
+.card-premium {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px -15px rgba(139, 92, 246, 0.15);
+}
+
+.dark .card-premium:hover {
+    box-shadow: 0 10px 40px -15px rgba(6, 182, 212, 0.15);
+}
+
+/* Premium Button Styles */
+.btn-premium {
+    background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+    transition: all 0.2s ease;
+}
+
+.btn-premium:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px -8px rgba(139, 92, 246, 0.5);
+}
+
+.btn-premium:active {
+    transform: scale(0.98);
+}
+
+/* Premium Input Focus */
+.input-premium:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.dark .input-premium:focus {
+    border-color: #06b6d4;
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass-card {
+    background: rgba(24, 24, 27, 0.8);
+    border: 1px solid rgba(63, 63, 70, 0.5);
+}
+
+/* Hover Glow Effect */
+.hover-glow {
+    position: relative;
+}
+
+.hover-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+}
+
+.hover-glow:hover::before {
+    opacity: 1;
+}
+
+/* Nav Item Active Glow */
+.nav-active {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+    border-left: 3px solid #8b5cf6;
+}
+
+.dark .nav-active {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-left: 3px solid #06b6d4;
+}
+
+/* Progress Bar Premium */
+.progress-premium {
+    background: linear-gradient(90deg, #8b5cf6 0%, #06b6d4 100%);
+}
+
+/* Smooth Transitions */
+.transition-smooth {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }

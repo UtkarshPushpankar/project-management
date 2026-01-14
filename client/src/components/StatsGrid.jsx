@@ -82,9 +82,9 @@ export default function StatsGrid() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-9">
             {statCards.map(
-                ({ icon: Icon, title, value, subtitle, bgColor, textColor }, i) => (
-                    <div key={i} className="bg-white dark:bg-zinc-950 dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 transition duration-200 rounded-md" >
-                        <div className="p-6 py-4">
+                ({ icon: Icon, title, value, subtitle, bgColor, textColor, hoverGlow }, i) => (
+                    <div key={i} className={`group bg-white shadow-sm dark:shadow-none dark:bg-zinc-950 dark:bg-gradient-to-br dark:from-zinc-800/70 dark:to-zinc-900/50 border border-gray-200 dark:border-zinc-800 rounded-xl transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg hover:shadow-purple-500/10 dark:hover:shadow-cyan-500/10 ${hoverGlow}`} >
+                        <div className="p-6 py-5">
                             <div className="flex items-start justify-between">
                                 <div>
                                     <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">
@@ -99,8 +99,8 @@ export default function StatsGrid() {
                                         </p>
                                     )}
                                 </div>
-                                <div className={`p-3 rounded-xl ${bgColor} bg-opacity-20`}>
-                                    <Icon size={20} className={textColor} />
+                                <div className={`p-3 rounded-xl ${bgColor} transition-transform duration-300 group-hover:scale-110`}>
+                                    <Icon size={22} className={textColor} />
                                 </div>
                             </div>
                         </div>
