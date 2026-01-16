@@ -294,6 +294,198 @@ const sendTaskAssignmentEmail = inngest.createFunction(
     }
 )
 
+// ================================
+// AI Dependency Brain Functions
+// ================================
+
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || "http://localhost:8000";
+
+/**
+ * Daily cron job to analyze all active projects
+ * Runs at 6 AM every day
+ */
+const dailyProjectAnalysis = inngest.createFunction(
+    {
+        id: 'daily-ai-project-analysis',
+        retries: 1
+    },
+    { cron: '0 6 * * *' }, // 6 AM daily
+    async ({ step }) => {
+        // Get all active projects
+        const projects = await step.run('fetch-active-projects', async () => {
+            return await prisma.project.findMany({
+                where: { status: 'ACTIVE' },
+                select: { id: true, name: true }
+            });
+        });
+
+        console.log(`🧠 Daily AI Analysis: Processing ${projects.length} projects`);
+
+        // Analyze each project
+        for (const project of projects) {
+            await step.run(`analyze-${project.id}`, async () => {
+                try {
+                    // Fetch project details
+                    const projectData = await prisma.project.findUnique({
+                        where: { id: project.id },
+                        include: {
+                            tasks: {
+                                include: { assignee: true }
+                            }
+                        }
+                    });
+
+                    if (!projectData || projectData.tasks.length < 2) {
+                        return { skipped: true, reason: 'Not enough tasks' };
+                    }
+
+                    // Get existing dependencies
+                    const taskIds = projectData.tasks.map(t => t.id);
+                    const existingDeps = await prisma.taskDependency.findMany({
+                        where: { taskId: { in: taskIds } }
+                    });
+
+                    // Call AI service
+                    const response = await fetch(`${AI_SERVICE_URL}/api/v1/analyze`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            project: {
+                                id: projectData.id,
+                                name: projectData.name,
+                                description: projectData.description,
+                                start_date: projectData.start_date,
+                                end_date: projectData.end_date,
+                                tasks: projectData.tasks.map(t => ({
+                                    id: t.id,
+                                    title: t.title,
+                                    description: t.description,
+                                    status: t.status,
+                                    priority: t.priority,
+                                    assigneeId: t.assigneeId,
+                                    assigneeName: t.assignee?.name,
+                                    due_date: t.due_date,
+                                    createdAt: t.createdAt
+                                })),
+                                existingDependencies: existingDeps.map(d => ({
+                                    id: d.id,
+                                    taskId: d.taskId,
+                                    dependsOnTaskId: d.dependsOnTaskId,
+                                    type: d.type
+                                }))
+                            }
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Save analysis
+                        await prisma.projectRiskAnalysis.create({
+                            data: {
+                                projectId: project.id,
+                                riskScore: result.analysis.riskScore,
+                                riskLevel: result.analysis.riskLevel,
+                                criticalPathIds: result.analysis.criticalPathIds,
+                                bottlenecks: result.analysis.bottlenecks,
+                                alerts: result.analysis.alerts,
+                                suggestions: result.analysis.suggestedDependencies
+                            }
+                        });
+
+                        return {
+                            success: true,
+                            riskScore: result.analysis.riskScore
+                        };
+                    }
+
+                    return { success: false, error: result.error };
+                } catch (error) {
+                    console.error(`Analysis failed for ${project.name}:`, error);
+                    return { success: false, error: error.message };
+                }
+            });
+        }
+
+        return { analyzed: projects.length };
+    }
+);
+
+/**
+ * Trigger analysis when a task is significantly updated
+ * Listens for task status, due_date, or assignee changes
+ */
+const analyzeOnTaskChange = inngest.createFunction(
+    {
+        id: 'analyze-on-task-change',
+        retries: 0,
+        debounce: {
+            period: '5m', // Wait 5 minutes for more changes
+            key: 'event.data.projectId'
+        }
+    },
+    { event: 'app/task.changed' },
+    async ({ event, step }) => {
+        const { projectId } = event.data;
+
+        await step.run('trigger-analysis', async () => {
+            try {
+                // Get project with tasks
+                const project = await prisma.project.findUnique({
+                    where: { id: projectId },
+                    include: {
+                        tasks: {
+                            include: { assignee: true }
+                        }
+                    }
+                });
+
+                if (!project || project.tasks.length < 2) {
+                    return { skipped: true };
+                }
+
+                const taskIds = project.tasks.map(t => t.id);
+                const existingDeps = await prisma.taskDependency.findMany({
+                    where: { taskId: { in: taskIds } }
+                });
+
+                const response = await fetch(`${AI_SERVICE_URL}/api/v1/risk/calculate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        project: {
+                            id: project.id,
+                            name: project.name,
+                            tasks: project.tasks.map(t => ({
+                                id: t.id,
+                                title: t.title,
+                                description: t.description,
+                                status: t.status,
+                                priority: t.priority,
+                                assigneeId: t.assigneeId,
+                                assigneeName: t.assignee?.name,
+                                due_date: t.due_date,
+                                createdAt: t.createdAt
+                            })),
+                            existingDependencies: existingDeps
+                        }
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    return { riskScore: result.riskScore };
+                }
+
+                return { error: result.error };
+            } catch (error) {
+                console.error('Task change analysis failed:', error);
+                return { error: error.message };
+            }
+        });
+    }
+);
 
 // Create an empty array where we'll export future Inngest functions
 export const functions = [
@@ -304,5 +496,7 @@ export const functions = [
     syncWorkspaceUpdation,
     syncWorkspaceDeletion,
     syncWorkspaceMemberCreation,
-    sendTaskAssignmentEmail
+    sendTaskAssignmentEmail,
+    dailyProjectAnalysis,
+    analyzeOnTaskChange
 ];

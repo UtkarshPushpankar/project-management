@@ -1,2 +1,29 @@
+# Dependencies
 node_modules
+
+# Environment
 .env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyc
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*

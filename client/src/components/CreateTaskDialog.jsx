@@ -22,6 +22,7 @@ export default function CreateTaskDialog({ showCreateTask, setShowCreateTask, pr
         type: "TASK",
         status: "TODO",
         priority: "MEDIUM",
+        techStack: "",
         assigneeId: "",
         due_date: "",
     });
@@ -44,6 +45,7 @@ export default function CreateTaskDialog({ showCreateTask, setShowCreateTask, pr
                 type: "TASK",
                 status: "TODO",
                 priority: "MEDIUM",
+                techStack: "",
                 assigneeId: "",
                 due_date: "",
             })
@@ -96,6 +98,24 @@ export default function CreateTaskDialog({ showCreateTask, setShowCreateTask, pr
                                 <option value="HIGH">High</option>
                             </select>
                         </div>
+                    </div>
+
+                    {/* Tech Stack */}
+                    <div className="space-y-1">
+                        <label className="text-sm font-medium">Tech Stack</label>
+                        <select value={formData.techStack} onChange={(e) => setFormData({ ...formData, techStack: e.target.value })} className="w-full rounded dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 px-3 py-2 text-zinc-900 dark:text-zinc-200 text-sm mt-1">
+                            <option value="">Select Tech Stack (Optional)</option>
+                            <option value="FRONTEND">Frontend</option>
+                            <option value="BACKEND">Backend</option>
+                            <option value="DATABASE">Database</option>
+                            <option value="CLOUD">Cloud</option>
+                            <option value="DEVOPS">DevOps</option>
+                            <option value="AI_ML">AI / ML</option>
+                            <option value="GEN_AI">Gen AI</option>
+                            <option value="DESIGN">Design</option>
+                            <option value="MOBILE">Mobile</option>
+                            <option value="OTHER">Other</option>
+                        </select>
                     </div>
 
                     {/* Assignee and Status */}

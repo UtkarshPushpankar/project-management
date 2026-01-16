@@ -9,6 +9,7 @@ import TaskDetails from "./pages/TaskDetails";
 import LandingPage from "./pages/LandingPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
+import AIAnalysisPage from "./pages/AIAnalysisPage";
 
 const App = () => {
     return (
@@ -27,6 +28,7 @@ const App = () => {
                     <Route path="projects" element={<Projects />} />
                     <Route path="projectsDetail" element={<ProjectDetails />} />
                     <Route path="taskDetails" element={<TaskDetails />} />
+                    <Route path="ai-analysis" element={<AIAnalysisPage />} />
                 </Route>
             </Routes>
         </>

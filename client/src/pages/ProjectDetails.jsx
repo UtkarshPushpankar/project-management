@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeftIcon, PlusIcon, SettingsIcon, BarChart3Icon, CalendarIcon, FileStackIcon, ZapIcon } from "lucide-react";
+import { ArrowLeftIcon, PlusIcon, SettingsIcon, BarChart3Icon, CalendarIcon, FileStackIcon, ZapIcon, BrainIcon } from "lucide-react";
 import ProjectAnalytics from "../components/ProjectAnalytics";
 import ProjectSettings from "../components/ProjectSettings";
 import CreateTaskDialog from "../components/CreateTaskDialog";
@@ -68,10 +68,19 @@ export default function ProjectDetail() {
                         </span>
                     </div>
                 </div>
-                <button onClick={() => setShowCreateTask(true)} className="flex items-center gap-2 px-5 py-2 text-sm rounded bg-gradient-to-br from-blue-500 to-blue-600 text-white" >
-                    <PlusIcon className="size-4" />
-                    New Task
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => navigate(`/ai-analysis?projectId=${id}`)}
+                        className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-gradient-to-r from-purple-500/10 to-cyan-500/10 border border-purple-500/30 text-purple-600 dark:text-purple-400 hover:from-purple-500/20 hover:to-cyan-500/20 transition-all"
+                    >
+                        <BrainIcon className="size-4" />
+                        AI Analysis
+                    </button>
+                    <button onClick={() => setShowCreateTask(true)} className="flex items-center gap-2 px-5 py-2 text-sm rounded bg-gradient-to-br from-blue-500 to-blue-600 text-white" >
+                        <PlusIcon className="size-4" />
+                        New Task
+                    </button>
+                </div>
             </div>
 
             {/* Info Cards */}
@@ -101,7 +110,17 @@ export default function ProjectDetail() {
                         { key: "analytics", label: "Analytics", icon: BarChart3Icon },
                         { key: "settings", label: "Settings", icon: SettingsIcon },
                     ].map((tabItem) => (
-                        <button key={tabItem.key} onClick={() => { setActiveTab(tabItem.key); setSearchParams({ id: id, tab: tabItem.key }) }} className={`flex items-center gap-2 px-4 py-2 text-sm transition-all ${activeTab === tabItem.key ? "bg-zinc-100 dark:bg-zinc-800/80" : "hover:bg-zinc-50 dark:hover:bg-zinc-700"}`} >
+                        <button
+                            key={tabItem.key}
+                            onClick={() => {
+                                setActiveTab(tabItem.key);
+                                setSearchParams({ id: id, tab: tabItem.key });
+                            }}
+                            className={`flex items-center gap-2 px-4 py-2 text-sm transition-all ${activeTab === tabItem.key
+                                    ? "bg-zinc-100 dark:bg-zinc-800/80"
+                                    : "hover:bg-zinc-50 dark:hover:bg-zinc-700"
+                                }`}
+                        >
                             <tabItem.icon className="size-3.5" />
                             {tabItem.label}
                         </button>
